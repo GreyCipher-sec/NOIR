@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; TRANSMISSIONS</h2>
+
+{% set pages = paginator.pages | default(value=section.pages) %}
+<ul style="list-style:none;padding:0;margin:0">
+{% for post in pages %}
+<li style="border-left:2px solid #2A2F36;padding-left:16px;margin-bottom:32px">
+<div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap">
+<span style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">{{ post.date | date(format="%Y-%m-%d") }}</span>
+<h3 style="margin:0;font-size:16px;font-weight:500"><a href="{{ post.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ post.title }}</a></h3>
+</div>
+{% if post.summary %}<p style="margin:4px 0 0;font-size:14px;color:#5C6370">{{ post.summary | safe }}</p>{% endif %}
+</li>
+{% endfor %}
+</ul>
+
+{% if paginator and paginator.number_pagers > 1 %}
+<div style="display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+{% if paginator.previous %}<a href="{{ paginator.previous }}">prev</a>{% else %}<span></span>{% endif %}
+<span style="color:#5C6370">{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
+{% if paginator.next %}<a href="{{ paginator.next }}">next</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

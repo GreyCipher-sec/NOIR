@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p style="font-size:17px;color:#A0A5AD;max-width:55ch;line-height:1.8;margin-bottom:48px">
+A public notebook for documenting experiments, implementation details, failures, and lessons learned while exploring systems and security.
+</p>
+
+{% set posts_section = get_section(path="posts/_index.md") %}
+{% if posts_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; LATEST TRANSMISSIONS</h2>
+<ul style="list-style:none;padding:0;margin:0">
+{% for post in posts_section.pages %}
+{% if loop.index <= 5 %}
+<li style="border-left:2px solid #2A2F36;padding-left:16px;margin-bottom:32px">
+<div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap">
+<span style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">{{ post.date | date(format="%Y-%m-%d") }}</span>
+<h3 style="margin:0;font-size:16px;font-weight:500"><a href="{{ post.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ post.title }}</a></h3>
+</div>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+
+{% set projects_section = get_section(path="projects/_index.md") %}
+{% if projects_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; ACTIVE PROJECTS</h2>
+{% for project in projects_section.pages %}
+{% if loop.index <= 2 %}
+<div style="background:#16191D;border:1px solid #2A2F36;padding:24px;margin-bottom:24px">
+<h3 style="margin:0 0 12px;font-size:20px">{{ project.title }}</h3>
+{% if project.extra.stack %}<p style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370;margin:0"><strong style="color:#A0A5AD">STACK:</strong> {{ project.extra.stack }}</p>{% endif %}
+{% if project.summary %}<p style="margin:12px 0 0">{{ project.summary | safe }}</p>{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% set notes_section = get_section(path="notes/_index.md") %}
+{% if notes_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; FIELD NOTES</h2>
+<div style="display:grid;grid-template-columns:1fr;gap:16px">
+{% for note in notes_section.pages %}
+{% if loop.index <= 6 %}
+<div style="border:1px solid #2A2F36;padding:16px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:4px">{{ note.date | date(format="%Y-%m-%d") }}</div>
+<h3 style="margin:0;font-size:14px"><a href="{{ note.permalink | safe }}" style="color:#E5C07B;text-decoration:none">{{ note.title }}</a></h3>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% set ctf_section = get_section(path="ctf/_index.md") %}
+{% if ctf_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; RECENT CTF</h2>
+<ul style="list-style:none;padding:0;margin:0">
+{% for entry in ctf_section.pages %}
+{% if loop.index <= 4 %}
+<li style="border-left:2px solid #2A2F36;padding-left:16px;margin-bottom:16px">
+<div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap">
+<span style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">{{ entry.date | date(format="%Y-%m-%d") }}</span>
+<h3 style="margin:0;font-size:15px"><a href="{{ entry.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ entry.title }}</a></h3>
+{% if entry.extra.solved %}<span style="font-family:'CommitMono',monospace;font-size:10px;color:#98C379">SOLVED</span>{% endif %}
+</div>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+
+{% set wargames_section = get_section(path="wargames/_index.md") %}
+{% if wargames_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; RECENT WARGAMES</h2>
+<div style="display:grid;grid-template-columns:1fr;gap:16px">
+{% for entry in wargames_section.pages %}
+{% if loop.index <= 4 %}
+<div style="border:1px solid #2A2F36;padding:16px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:4px">{{ entry.date | date(format="%Y-%m-%d") }}{% if entry.extra.platform %} — {{ entry.extra.platform }}{% endif %}</div>
+<h3 style="margin:0;font-size:14px"><a href="{{ entry.permalink | safe }}" style="color:#E5C07B;text-decoration:none">{{ entry.title }}</a></h3>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+{% endif %}
+
+{% set collections_section = get_section(path="collections/_index.md") %}
+{% if collections_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; COLLECTIONS</h2>
+<ul style="list-style:none;padding:0;margin:0">
+{% for c in collections_section.pages %}
+{% if loop.index <= 4 %}
+<li style="border-left:2px solid #2A2F36;padding-left:16px;margin-bottom:16px">
+<div style="font-family:'CommitMono',monospace;font-size:10px;color:#5C6370;letter-spacing:0.06em">{{ c.extra.collection_type | default(value="collection") | upper }} · {{ c.extra.status | default(value="active") | upper }}</div>
+<h3 style="margin:2px 0 0;font-size:15px"><a href="{{ c.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ c.title }}</a></h3>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; FIELD NOTES</h2>
+
+{% set pages = paginator.pages | default(value=section.pages) %}
+<div style="display:grid;grid-template-columns:1fr;gap:16px">
+{% for note in pages %}
+<div style="border:1px solid #2A2F36;padding:16px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:4px">{{ note.date | date(format="%Y-%m-%d") }}</div>
+<h3 style="margin:0;font-size:14px"><a href="{{ note.permalink | safe }}" style="color:#E5C07B;text-decoration:none">{{ note.title }}</a></h3>
+</div>
+{% endfor %}
+</div>
+
+{% if paginator and paginator.number_pagers > 1 %}
+<div style="display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+{% if paginator.previous %}<a href="{{ paginator.previous }}">prev</a>{% else %}<span></span>{% endif %}
+<span style="color:#5C6370">{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
+{% if paginator.next %}<a href="{{ paginator.next }}">next</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% elif page.summary %}{{ page.summary | striptags | truncate(length=160) }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+
+{% block og_type %}article{% endblock og_type %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}{% if page.description %}{{ page.description }}{% elif page.summary %}{{ page.summary | striptags | truncate(length=160) }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+{% block twitter_title %}{{ page.title }}{% endblock twitter_title %}
+{% block twitter_description %}{% if page.description %}{{ page.description }}{% elif page.summary %}{{ page.summary | striptags | truncate(length=160) }}{% else %}{{ config.description }}{% endif %}{% endblock twitter_description %}
+
+{% block extra_head %}
+{% if page.taxonomies.collection %}{% set jsonld_collection_page = get_page(path="collections/" ~ page.taxonomies.collection[0] ~ ".md") %}{% endif %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ page.title | json_encode | safe }},
+  "datePublished": "{{ page.date | date(format="%Y-%m-%dT%H:%M:%S%:z") }}",
+  {% if page.updated %}"dateModified": "{{ page.updated | date(format="%Y-%m-%dT%H:%M:%S%:z") }}",{% endif %}
+  "author": { "@type": "Person", "name": {{ config.extra.author | default(value=config.title) | json_encode | safe }} },
+  "mainEntityOfPage": { "@type": "WebPage", "@id": {{ current_url | json_encode | safe }} }
+  {% if page.description %},"description": {{ page.description | json_encode | safe }}{% endif %}
+  {% if page.taxonomies.collection %},"isPartOf": { "@type": "CreativeWorkSeries", "name": {{ jsonld_collection_page.title | json_encode | safe }}, "url": {{ jsonld_collection_page.permalink | json_encode | safe }} }{% endif %}
+}
+</script>
+{% endblock extra_head %}
+
+{% block content %}
+
+<article style="margin-bottom:64px">
+<header style="margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid #2A2F36">
+{% if page.taxonomies.collection %}
+{% set collection_id = page.taxonomies.collection[0] %}
+{% set collection_page = get_page(path="collections/" ~ collection_id ~ ".md") %}
+{% set collection_term_data = get_taxonomy_term(kind="collection", term=collection_id) %}
+{% set members = collection_term_data.pages | sort(attribute="extra.collection_part") %}
+{% set_global my_index = -1 %}
+{% for m in members %}{% if m.permalink == page.permalink %}{% set_global my_index = loop.index0 %}{% endif %}{% endfor %}
+{% set total_known = members | length %}
+{% set status = collection_page.extra.status | default(value="active") %}
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:12px">
+<a href="{{ collection_page.permalink | safe }}" style="color:#98C379">{{ collection_page.extra.collection_type | default(value="collection") | upper }} / {{ collection_page.title | upper }}</a>
+&nbsp;·&nbsp;{{ my_index + 1 }} / {% if status == "completed" or status == "archived" %}{{ total_known }}{% else %}?{% endif %}
+</div>
+{% endif %}
+<h1 style="font-size:clamp(1.4rem,4vw,1.75rem);margin-bottom:16px;line-height:1.2">{{ page.title }}</h1>
+<div style="display:flex;flex-wrap:wrap;gap:16px;font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">
+{% if page.date %}<span>DATE: <time datetime="{{ page.date | date(format="%Y-%m-%d") }}">{{ page.date | date(format="%Y-%m-%d") }}</time></span>{% endif %}
+{% if page.taxonomies.categories %}<span>CAT: {{ page.taxonomies.categories | join(sep=", ") }}</span>{% endif %}
+{% if page.taxonomies.tags %}<span>TAGS: {{ page.taxonomies.tags | join(sep=", ") }}</span>{% endif %}
+<span>READ: {{ page.reading_time }} min</span>
+</div>
+</header>
+
+<div>
+{{ page.content | safe }}
+</div>
+
+{% if page.taxonomies.collection %}
+<nav aria-label="Collection navigation" style="margin-top:48px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+<div style="display:flex;flex-direction:column;gap:10px">
+{% if my_index > 0 %}<a href="{{ members[my_index - 1].permalink | safe }}">&larr; {{ members[my_index - 1].title }}</a>{% endif %}
+<a href="{{ collection_page.permalink | safe }}" style="color:#98C379">&uarr; {{ collection_page.title }}</a>
+{% if my_index >= 0 and my_index + 1 < total_known %}<a href="{{ members[my_index + 1].permalink | safe }}">&rarr; {{ members[my_index + 1].title }}</a>{% endif %}
+</div>
+</nav>
+{% endif %}
+</article>
+
+{% endblock content %}

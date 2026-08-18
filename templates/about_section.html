@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; ABOUT</h2>
+
+<div style="max-width:600px">
+{{ section.content | safe }}
+</div>
+
+{% endblock content %}

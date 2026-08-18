@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; COLLECTIONS</h2>
+<p style="margin-bottom:32px">{{ section.description }}</p>
+
+{% set pages = paginator.pages | default(value=section.pages) %}
+{% for c in pages %}
+{% set collection_term = get_taxonomy_term(kind="collection", term=c.slug) %}
+{% set entry_count = collection_term.pages | length %}
+<a href="{{ c.permalink | safe }}" style="text-decoration:none;color:inherit">
+<div style="background:#16191D;border:1px solid #2A2F36;padding:20px;margin-bottom:16px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#98C379;letter-spacing:0.08em;margin-bottom:6px">{{ c.extra.collection_type | default(value="collection") | upper }} · {{ c.extra.status | default(value="active") | upper }}</div>
+<h3 style="margin:0 0 8px;font-size:18px;color:#E6E6E6">{{ c.title }}</h3>
+{% if c.description %}<p style="margin:0 0 8px;font-size:14px">{{ c.description }}</p>{% endif %}
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370">{{ entry_count }} entries · updated {% if c.updated %}{{ c.updated | date(format="%Y-%m-%d") }}{% else %}{{ c.date | date(format="%Y-%m-%d") }}{% endif %}</div>
+</div>
+</a>
+{% endfor %}
+
+{% if paginator and paginator.number_pagers > 1 %}
+<div style="display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+{% if paginator.previous %}<a href="{{ paginator.previous | safe }}">prev</a>{% else %}<span></span>{% endif %}
+<span style="color:#5C6370">{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
+{% if paginator.next %}<a href="{{ paginator.next | safe }}">next</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; CTF LOGS</h2>
+
+{% set pages = paginator.pages | default(value=section.pages) %}
+{% for entry in pages %}
+<div style="background:#16191D;border:1px solid #2A2F36;padding:20px;margin-bottom:16px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+<h3 style="margin:0;font-size:17px"><a href="{{ entry.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ entry.title }}</a></h3>
+{% if entry.extra.solved %}<span style="font-family:'CommitMono',monospace;font-size:11px;color:#98C379;border:1px solid #98C379;padding:2px 8px">SOLVED</span>{% else %}<span style="font-family:'CommitMono',monospace;font-size:11px;color:#E06C75;border:1px solid #E06C75;padding:2px 8px">UNSOLVED</span>{% endif %}
+</div>
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-top:8px;display:flex;gap:16px;flex-wrap:wrap">
+{% if entry.extra.event %}<span>EVENT: {{ entry.extra.event }}</span>{% endif %}
+{% if entry.extra.category %}<span>CAT: {{ entry.extra.category }}</span>{% endif %}
+{% if entry.extra.difficulty %}<span>DIFF: {{ entry.extra.difficulty }}</span>{% endif %}
+{% if entry.extra.points %}<span>PTS: {{ entry.extra.points }}</span>{% endif %}
+<span>{{ entry.date | date(format="%Y-%m-%d") }}</span>
+</div>
+{% if entry.summary %}<p style="margin:12px 0 0">{{ entry.summary | safe }}</p>{% endif %}
+</div>
+{% endfor %}
+
+{% if paginator and paginator.number_pagers > 1 %}
+<div style="display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+{% if paginator.previous %}<a href="{{ paginator.previous | safe }}">prev</a>{% else %}<span></span>{% endif %}
+<span style="color:#5C6370">{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
+{% if paginator.next %}<a href="{{ paginator.next | safe }}">next</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

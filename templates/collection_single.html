@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_type %}website{% endblock og_type %}
+{% block og_title %}{{ page.title }}{% endblock og_title %}
+{% block og_description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+{% block twitter_title %}{{ page.title }}{% endblock twitter_title %}
+{% block twitter_description %}{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}{% endblock twitter_description %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ page.title | json_encode | safe }},
+  "url": {{ current_url | json_encode | safe }}
+  {% if page.description %},"description": {{ page.description | json_encode | safe }}{% endif %}
+}
+</script>
+{% endblock extra_head %}
+
+{% block content %}
+
+{% set collection_term = get_taxonomy_term(kind="collection", term=page.slug) %}
+{% set entries = collection_term.pages | sort(attribute="extra.collection_part") %}
+{% set status = page.extra.status | default(value="active") %}
+
+<div style="border:1px solid #2A2F36;padding:24px;margin-bottom:32px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#98C379;letter-spacing:0.08em;margin-bottom:6px">{{ page.extra.collection_type | default(value="collection") | upper }}</div>
+<h1 style="margin:0 0 20px;font-size:clamp(1.4rem,4vw,1.75rem)">{{ page.title }}</h1>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;font-family:'CommitMono',monospace;font-size:12px">
+<div><span style="color:#5C6370">STATUS</span><br><span style="color:#E6E6E6">{{ status | upper }}</span></div>
+<div><span style="color:#5C6370">ENTRIES</span><br><span style="color:#E6E6E6">{{ entries | length }}</span></div>
+<div><span style="color:#5C6370">STARTED</span><br><span style="color:#E6E6E6">{{ page.date | date(format="%Y-%m-%d") }}</span></div>
+{% if page.updated %}<div><span style="color:#5C6370">UPDATED</span><br><span style="color:#E6E6E6">{{ page.updated | date(format="%Y-%m-%d") }}</span></div>{% endif %}
+</div>
+</div>
+
+{% if page.content %}
+<div style="margin-bottom:40px">
+{{ page.content | safe }}
+</div>
+{% endif %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:16px">&gt;&gt; ENTRIES</h2>
+<ol style="list-style:none;padding:0;margin:0">
+{% for entry in entries %}
+<li style="display:flex;gap:16px;align-items:baseline;border-left:2px solid #2A2F36;padding:8px 0 8px 16px;margin-bottom:4px">
+<span style="font-family:'CommitMono',monospace;font-size:13px;color:#5C6370;min-width:24px">{% if entry.extra.collection_part < 10 %}0{% endif %}{{ entry.extra.collection_part }}</span>
+<a href="{{ entry.permalink | safe }}" style="color:#E6E6E6;text-decoration:none;font-size:15px">{{ entry.title }}</a>
+</li>
+{% endfor %}
+</ol>
+
+{% endblock content %}

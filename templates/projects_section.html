@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
+{% block og_title %}{{ section.title }}{% endblock og_title %}
+{% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
+
+{% block content %}
+
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; PROJECT DOSSIERS</h2>
+
+{% set pages = paginator.pages | default(value=section.pages) %}
+{% for project in pages %}
+<div style="background:#16191D;border:1px solid #2A2F36;padding:24px;margin-bottom:24px">
+<h3 style="margin:0 0 12px;font-size:20px">{{ project.title }}</h3>
+{% if project.extra.stack %}<p style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370;margin:0"><strong style="color:#A0A5AD">STACK:</strong> {{ project.extra.stack }}</p>{% endif %}
+{% if project.extra.repository %}<p style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370;margin:4px 0 0"><strong style="color:#A0A5AD">REPO:</strong> <a href="{{ project.extra.repository | safe }}">{{ project.extra.repository | safe }}</a></p>{% endif %}
+{% if project.summary %}<p style="margin:12px 0 0">{{ project.summary | safe }}</p>{% endif %}
+<p style="margin:12px 0 0"><a href="{{ project.permalink | safe }}">[ open dossier ]</a></p>
+</div>
+{% endfor %}
+
+{% if paginator and paginator.number_pagers > 1 %}
+<div style="display:flex;justify-content:space-between;margin-top:32px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
+{% if paginator.previous %}<a href="{{ paginator.previous }}">prev</a>{% else %}<span></span>{% endif %}
+<span style="color:#5C6370">{{ paginator.current_index }} / {{ paginator.number_pagers }}</span>
+{% if paginator.next %}<a href="{{ paginator.next }}">next</a>{% else %}<span></span>{% endif %}
+</div>
+{% endif %}
+
+{% endblock content %}

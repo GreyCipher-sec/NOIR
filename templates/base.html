@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="{{ config.default_language }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}{{ config.title }}{% endblock title %}</title>
+<meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
+<link rel="canonical" href="{{ current_url | safe }}">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="stylesheet" href="/css/fonts.css">
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="{{ config.title }}">
+<meta property="og:type" content="{% block og_type %}website{% endblock og_type %}">
+<meta property="og:url" content="{{ current_url | safe }}">
+<meta property="og:title" content="{% block og_title %}{{ config.title }}{% endblock og_title %}">
+<meta property="og:description" content="{% block og_description %}{{ config.description }}{% endblock og_description %}">
+{% block og_image %}{% if config.extra.social_image %}<meta property="og:image" content="{{ get_url(path=config.extra.social_image, trailing_slash=false) | safe }}">{% endif %}{% endblock og_image %}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="{% if config.extra.social_image %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{% block twitter_title %}{{ config.title }}{% endblock twitter_title %}">
+<meta name="twitter:description" content="{% block twitter_description %}{{ config.description }}{% endblock twitter_description %}">
+{% block twitter_image %}{% if config.extra.social_image %}<meta name="twitter:image" content="{{ get_url(path=config.extra.social_image, trailing_slash=false) | safe }}">{% endif %}{% endblock twitter_image %}
+
+{% block extra_head %}{% endblock extra_head %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ config.title | json_encode | safe }},
+  "url": {{ config.base_url | json_encode | safe }},
+  "description": {{ config.description | json_encode | safe }}
+}
+</script>
+
+<style>
+html{background:#0F1113}
+body{background:#0F1113;color:#E6E6E6;font-family:'Archivo',system-ui,-apple-system,sans-serif;line-height:1.7;margin:0;padding:20px;min-height:100vh;box-sizing:border-box}
+.container{max-width:780px;margin:0 auto}
+a{color:#61AFEF;text-decoration:none}
+a:hover{color:#E6E6E6;text-decoration:underline}
+h1,h2,h3,h4,h5,h6{color:#E6E6E6;margin-top:32px;margin-bottom:16px}
+p{color:#A0A5AD;margin-bottom:16px;max-width:70ch}
+code{font-family:'CommitMono',monospace;font-size:0.875em;background:#16191D;padding:2px 6px;border:1px solid #2A2F36;color:#E5C07B}
+pre{font-family:'CommitMono',monospace;background:#131518;border:1px solid #2A2F36;padding:16px;overflow-x:auto;font-size:0.85rem;line-height:1.6}
+pre code{background:transparent;border:none;padding:0;color:inherit}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li{color:#A0A5AD;margin-bottom:4px}
+blockquote{border-left:2px solid #3E4451;padding-left:16px;margin:16px 0;color:#5C6370;font-style:italic}
+table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:0.9rem}
+th,td{padding:8px 16px;text-align:left;border-bottom:1px solid #2A2F36}
+th{font-family:'CommitMono',monospace;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:#E6E6E6;font-weight:600}
+td{color:#A0A5AD}
+tr:hover td{background:#16191D}
+img{max-width:100%;height:auto;display:block}
+hr{border:none;border-top:1px solid #2A2F36;margin:48px 0}
+</style>
+</head>
+<body>
+<div class="container">
+<header style="border-bottom:1px solid #2A2F36;padding-bottom:24px;margin-bottom:32px">
+<div style="font-family:'CommitMono',monospace;font-size:10px;color:#5C6370;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px">// ARCHIVE // SYSTEMS // SECURITY // HARDWARE</div>
+<h1 style="font-size:28px;font-weight:700;letter-spacing:0.08em;margin:0"><a href="/" style="color:#E6E6E6;text-decoration:none">GREYCIPHER</a></h1>
+<p style="color:#5C6370;font-size:14px;margin:8px 0 0">Independent research archive</p>
+<nav style="font-family:'CommitMono',monospace;font-size:14px;margin:20px 0;display:flex;gap:20px;flex-wrap:wrap">
+<a href="/">[index]</a>
+<a href="/posts/">posts</a>
+<a href="/projects/">projects</a>
+<a href="/notes/">notes</a>
+<a href="/collections/">collections</a>
+<a href="/ctf/">ctf</a>
+<a href="/wargames/">wargames</a>
+<a href="/about/">about</a>
+</nav>
+</header>
+<main>
+{% block content %}{% endblock content %}
+</main>
+<footer style="border-top:1px solid #2A2F36;margin-top:64px;padding-top:24px;font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">
+greycipher.dev | <a href="/rss.xml">RSS</a> | dark mode
+</footer>
+</div>
+</body>
+</html>
