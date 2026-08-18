@@ -60,12 +60,21 @@
 {% if page.taxonomies.collection %}
 <nav aria-label="Collection navigation" style="margin-top:48px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
 <div style="display:flex;flex-direction:column;gap:10px">
-{% if my_index > 0 %}<a href="{{ members[my_index - 1].permalink | safe }}">&larr; {{ members[my_index - 1].title }}</a>{% endif %}
+{% if my_index > 0 %}
+    {% set prev_index = my_index - 1 %}
+    {% set prev_member = members | nth(n=prev_index) %}
+    <a href="{{ prev_member.permalink | safe }}">&larr; {{ prev_member.title }}</a>
+{% endif %}
 <a href="{{ collection_page.permalink | safe }}" style="color:#98C379">&uarr; {{ collection_page.title }}</a>
-{% if my_index >= 0 and my_index + 1 < total_known %}<a href="{{ members[my_index + 1].permalink | safe }}">&rarr; {{ members[my_index + 1].title }}</a>{% endif %}
+{% if my_index >= 0 and my_index + 1 < total_known %}
+    {% set next_index = my_index + 1 %}
+    {% set next_member = members | nth(n=next_index) %}
+    <a href="{{ next_member.permalink | safe }}">&rarr; {{ next_member.title }}</a>
+{% endif %}
 </div>
 </nav>
 {% endif %}
 </article>
 
 {% endblock content %}
+
