@@ -31,7 +31,7 @@ git submodule add https://github.com/GreyCipher-sec/NOIR.git themes/NOIR
 Or without submodules:
 
 ```bash
-git clone https://github.com/<your-username>/NOIR.git themes/NOIR
+git clone https://github.com/GreyCipher-sec/NOIR.git themes/NOIR
 ```
 
 Then enable it in your site's `zola.toml`:
