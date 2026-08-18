@@ -25,7 +25,7 @@ A minimal, dark, monospace-accented [Zola](https://www.getzola.org) theme for re
 Inside your Zola site, add NOIR as a submodule (or plain clone) under `themes/`:
 
 ```bash
-git submodule add https://github.com/<your-username>/NOIR.git themes/NOIR
+git submodule add https://github.com/GreyCipher-sec/NOIR.git themes/NOIR
 ```
 
 Or without submodules:
