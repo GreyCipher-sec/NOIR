@@ -1,11 +1,11 @@
 name = "NOIR"
-description = "A minimal, dark, monospace-accented Zola theme for research notebooks, technical archives, and personal engineering blogs. Built-in support for posts, projects, CTF write-ups, wargame logs, and multi-part collections (series/projects/dossiers). No JavaScript, no tracking, self-hosted fonts."
+description = "A minimal, dark, monospace-accented Zola theme for research notebooks, technical archives and personal engineering blogs. Built-in support for posts, projects, CTF write-ups, wargame logs and multi-part collections (series/projects/dossiers). No JavaScript, no tracking, self-hosted fonts."
 license = "MIT"
-homepage = "https://github.com/your-username/NOIR"
+homepage = "https://github.com/GreyCipher-sec/NOIR"
 min_version = "0.19.0"
 
 # Config values a site's zola.toml can set under [extra] to customize the
-# theme. None are required — the theme falls back sensibly if omitted.
+# theme. None are required, the theme falls back sensibly if omitted.
 [extra]
 author = "Site author name, used in JSON-LD structured data (falls back to config.title if unset)"
 social_image = "Path under static/ to a 1200x630 image used for Open Graph / Twitter Card previews (omitted entirely if unset)"
