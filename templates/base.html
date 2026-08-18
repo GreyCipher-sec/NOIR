@@ -6,27 +6,6 @@
 
 <title>{% block title %}{{ config.title }}{% endblock title %}</title>
 <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
-<link rel="canonical" href="{{ current_url | safe }}">
-<link rel="icon" type="image/png" href="/images/favicon.png">
-<link rel="stylesheet" href="/css/fonts.css">
-
-<!-- Open Graph -->
-<meta property="og:site_name" content="{{ config.title }}">
-<meta property="og:type" content="{% block og_type %}website{% endblock og_type %}">
-<meta property="og:url" content="{{ current_url | safe }}">
-<meta property="og:title" content="{% block og_title %}{{ config.title }}{% endblock og_title %}">
-<meta property="og:description" content="{% block og_description %}{{ config.description }}{% endblock og_description %}">
-{% block og_image %}{% if config.extra.social_image %}<meta property="og:image" content="{{ get_url(path=config.extra.social_image, trailing_slash=false) | safe }}">{% endif %}{% endblock og_image %}
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="{% if config.extra.social_image %}summary_large_image{% else %}summary{% en<!DOCTYPE html>
-<html lang="{{ config.default_language }}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>{% block title %}{{ config.title }}{% endblock title %}</title>
-<meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
 {% if current_url %}<link rel="canonical" href="{{ current_url | safe }}">{% else %}<link rel="canonical" href="{{ config.base_url | safe }}">{% endif %}
 <link rel="icon" type="image/png" href="/images/favicon.png">
 <link rel="stylesheet" href="/css/fonts.css">
