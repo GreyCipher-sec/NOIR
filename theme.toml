@@ -2,10 +2,21 @@ name = "NOIR"
 description = "A minimal, dark, monospace-accented Zola theme for research notebooks, technical archives and personal engineering blogs. Built-in support for posts, projects, CTF write-ups, wargame logs and multi-part collections (series/projects/dossiers). No JavaScript, no tracking, self-hosted fonts."
 license = "MIT"
 homepage = "https://github.com/GreyCipher-sec/NOIR"
-min_version = "0.19.0"
+min_version = "0.23.0"
 
-# Config values a site's zola.toml can set under [extra] to customize the
-# theme. None are required, the theme falls back sensibly if omitted.
+# Config values a site's zola.toml can set under [extra] to customize
+# the theme. None are required, the theme falls back sensibly if omitted.
+# Zola type-checks a site's [extra] values against these defaults when
+# merging zola.toml with this file, so the defaults below use the
+# real expected type (empty array/table) rather than descriptive text.
+# See zola.toml.example at the repository root for documented,
+# ready-to-copy examples of each and the README for the full
+# explanation (Contacts/Donate/PGP, Webring).
 [extra]
 author = "Site author name, used in JSON-LD structured data (falls back to config.title if unset)"
 social_image = "Path under static/ to a 1200x630 image used for Open Graph / Twitter Card previews (omitted entirely if unset)"
+pgp_fingerprint = ""
+pgp_key_url = ""
+donations = []
+socials = []
+webring = {}

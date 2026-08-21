@@ -11,38 +11,52 @@ A minimal, dark, monospace-accented [Zola](https://www.getzola.org) theme for re
 - Homepage digest showing latest posts, active projects, recent notes, recent CTF entries, and recent wargame logs
 - Per-project metadata (stack, repository, license, status) via `extra`
 - Tag and category taxonomies
-- Built-in RSS 2.0 feed (`/rss.xml`)
+- Built-in RSS 2.0 feed (`/rss.xml`), with `<link rel="alternate">` auto-discovery in `<head>`
 - Pagination on all list sections
 - SEO out of the box: dynamic meta descriptions, canonical URLs, Open Graph, Twitter Cards, JSON-LD structured data (see [SEO](#seo) below)
 - Collections for multi-part series, ongoing projects, and investigative dossiers, any post in any section can opt in (see [Collections](#collections) below)
+- Modular by default: only **posts** and **about** are required, the other five sections (projects, notes, collections, ctf, wargames) are discovered dynamically and can be addded or skipped entirely at any point without a single template (see [Content structure](#content-structure) below)
+- Optional Contact / crypto donations / PGP sections on the About page, each with an inline SVG icon from a bundled, curated icon pack (see [Contact, donations & PGP](#contact-donations--pgp) below)
+- Optional webring footer widget: previous/next links computed from your position in a configured ring (see [Webring](#webring) below)
 - No JavaScript, no external requests, no cookies
 - Fully static, single CSS pass, self-hosted fonts
 
-> Content is managed by hand exactly as you would with any other Zola site. A separate companion tool, `archivist`, is planned to automate the bookkeeping around Collections; see [Managing content](#managing-content) below.
+> Content is managed by hand exactly as you would with any other Zola site, creating files, editing front matter, running `zola build/serve`. See [Managing content](#managing-content) below.
 
 ## Installation
 
 Inside your Zola site, add NOIR as a submodule (or plain clone) under `themes/`:
 
-```bash
+```
 git submodule add https://github.com/GreyCipher-sec/NOIR.git themes/NOIR
 ```
 
 Or without submodules:
 
-```bash
+```
 git clone https://github.com/GreyCipher-sec/NOIR.git themes/NOIR
 ```
 
 Then enable it in your site's `zola.toml`:
 
-```toml
+```
 theme = "NOIR"
 ```
 
+Three things need to exist at your site's root, not just inside `themes/NOIR/`, copy them over from the theme:
+
+```
+cp themes/NOIR/zola.toml.example zola.toml   # then edit base_url, title, etc.
+cp -r themes/NOIR/content.example content
+cp -r themes/NOIR/iconpack .
+```
+
+- **`content.example/`** has the two required `_index.md` stubs (`posts` and `about`, see [Content structure](#content-structure) below, everything else is optional and can be added later, see [Adding an optional section later](#adding-an-optional-section-later).
+- **`icontpack/`** is required regardless of whether you use Contact / Donate / PGP: the RSS link in the navbar loads an icon from it unconditionally on every page (see [Icons](#icons) below). Zola's `load_data()` always resolves path against your site's root, never the theme's directory, so the theme's own copy of `iconpack/` isn't reachable from your site unless you copy it over, without this step, every page fails to build, not just the About page.
+
 ## Content structure
 
-NOIR expects the following top-level sections in `content/`:
+NOIR's only two required sections are **posts** and **about**, everyting else (projects, notes, collections, ctf, wargames) is entirely optional and discovered dynamically at build time. The navbar and homepage digest check which section folders actually exist under `content/` (via Zola's `subsections`, not a hardcoded list), so a section you haven't created yet simply doesn't appear anywhere, no placeholder link, no empty digest block and adding one later needs zero template changes:
 
 ```
 content/
@@ -51,23 +65,23 @@ content/
 ├── posts/
 │   ├── _index.md
 │   └── my-post.md
-├── projects/
-│   ├── _index.md
-│   └── my-project.md
-├── notes/
-│   ├── _index.md
-│   └── my-note.md
-├── ctf/
-│   ├── _index.md
-│   └── my-writeup.md
-└── wargames/
-    ├── _index.md
-    └── my-level.md
+```
+
+RSS needs no section of its own `generate_feed = true` in `zola.toml` is enough on top of whatever content exists.
+
+The fastest way to get this minimal base right is to copy `content.example/` (at this theme's repository root) into your site's `content/`, it has both required `_index.md` files with correct front matter and zero entries, ready to build immediately.
+
+### Adding an optional section later
+
+Each of the five optional sections lives, pre-built and ready to copy under `optional-sections.example/` at the theme's repository root:
+
+```
+cp -r themes/NOIR/optional-sections.example/projects content/projects
 ```
 
 Each `_index.md` needs a `template` pointing to the matching section template, e.g.:
 
-```toml
+```
 +++
 title = "Posts"
 sort_by = "date"
@@ -77,11 +91,33 @@ paginate_by = 10
 +++
 ```
 
-Repeat the same pattern for `projects/_index.md` (`projects_section.html`), `notes/_index.md` (`notes_section.html`), `ctf/_index.md` (`ctf_section.html`), and `wargames/_index.md` (`wargames_section.html`). `about/_index.md` uses `about_section.html` and just renders its own body, it has no child pages.
+Repeat the same pattern for `projects/_index.md` (`projects_section.html`), `notes/_index.md` (`notes_section.html`), `collections/_index.md` (`collections_section.html`, `page_template = "collection_single.html"`, see [Collections](#collections) below), `ctf/_index.md` (`ctf_section.html`), and `wargames/_index.md` (`wargames_section.html`). `about/_index.md` uses `about_section.html` and just renders its own body, it has no child pages.
+
+## Navigation
+
+The navbar in the header is generated dynamically, not hardcoded. `base.html` first asks Zola which section folders actually exist under `content/`, then, for the ones that do, checks whether they have any pages yet:
+
+```
+{% set home = get_section(path="_index.md") %}
+{% if "posts/_index.md" in home.subsections %}
+  {% set posts_section = get_section(path="posts/_index.md") %}
+  {% if posts_section.pages | length > 0 %}<a href="/posts/">posts</a>{% endif %}
+{% endif %}
+```
+
+The outer `in home.subsections` check is what makes this safe to run even when a section (say `projects/`) doesn't exist at all yet, not just when it exists but is empty. Calling `get_section()` directly on a path that has no folder at all is a hard build error in Zola, checking membership in the root section's `subsections` list first avoids ever making that call for a path that isn't there. This is the mechanism behind [modularity](#content-structure): the five optional sections can be entirely absent from `content/`, and every page still builds.
+
+Once a section folder exists, its link still only appears after it has at least one page beyond its own `_index.md`, so creating `projects/_index.md` alone (e.g. via `optional-sections.example/`) doesn't clutter the nav until you've actually added a project.
+
+This isn't limited to the five sections NOIR ships templates for, either. After the known five, both the navbar and the homepage digest loop over `home.subsections` a second time and pick up **any other section folder**, under any name, the same way, using that section's own `title` as the link/heading text and generic title+date rendering on the homepage (since a name NOIR's never heard of has no bespoke fields like a project's `stack` or a CTF entry's `difficulty` to show). A section named `content/gists/` with its own `_index.md` (`template` pointing at any listing template the theme ships, e.g. `posts_section.html`) shows up in the nav as "gists", gets its own "GISTS" block on the homepage once it has an entry, and its pages appear in `/rss.xml` automatically, RSS is a global feed over every page site-wide already, with no per-section awareness to update in the first place. Removing the section (and its content) makes all three disappear again on the next build, with nothing left over: NOIR only ever reports what currently exists on disk, it doesn't remember a section that used to be there.
+
+`about` is the one exception and always shows: it's a single-body page, not a listing, so it never has "pages" to count, and it's one of the two sections assumed to always exist.
+
+**Note:** `get_section()` must be called without `metadata_only=true` for the page-count check to work, that flag causes Zola to return an empty `pages` array regardless of actual content, which would hide every section permanently. This isn't documented clearly upstream, worth knowing if you extend this pattern further.
 
 ### Post / note front matter
 
-```toml
+```
 +++
 title = "Post title"
 date = 2026-08-02T15:12:38+02:00
@@ -97,7 +133,7 @@ Your content here.
 
 ### Project front matter
 
-```toml
+```
 +++
 title = "packet-loom"
 date = 2026-08-02T16:09:17+02:00
@@ -115,7 +151,7 @@ Project write-up here.
 
 ### CTF write-up front matter
 
-```toml
+```
 +++
 title = "picoCTF 2026 - pwn/baby-rop"
 date = 2026-08-05T10:00:00+02:00
@@ -138,7 +174,7 @@ Write-up content here.
 
 ### Wargame log front matter
 
-```toml
+```
 +++
 title = "OverTheWire: Narnia - Level 4"
 date = 2026-08-06T10:00:00+02:00
@@ -160,7 +196,7 @@ Write-up content here.
 
 Minimal `zola.toml` for a site using NOIR:
 
-```toml
+```
 base_url = "https://example.com"
 title = "Your Site"
 description = "Your tagline."
@@ -195,6 +231,7 @@ NOIR ships with sensible SEO defaults so you don't have to think about it. All o
 - Open Graph tags (`og:title`, `og:description`, `og:type`, `og:image`, `og:url`) controls how links look when shared on Slack, Discord, etc.
 - Twitter Card tags (switches to `summary_large_image` automatically if a social image is configured)
 - `sitemap.xml` and `robots.txt` generated by Zola itself, no configuration needed
+- `<link rel="alternate" type="application/rss+xml">` in `<head>` so feed readers and browsers can auto-discover the RSS feed without a visibile link
 
 **On posts, projects, and notes specifically:**
 - JSON-LD structured data (`schema.org/Article`) with publish date, author, and canonical URL, helps search engines understand your content without guessing
@@ -207,7 +244,7 @@ NOIR ships with sensible SEO defaults so you don't have to think about it. All o
 
 To make shared links show a preview image instead of a blank card, add an image (1200×630px recommended) under `static/` and reference it in `zola.toml`:
 
-```toml
+```
 [extra]
 social_image = "images/social-preview.png"
 ```
@@ -216,7 +253,7 @@ social_image = "images/social-preview.png"
 
 Every `_index.md` and content page accepts a `description` field. Keep it under ~160 characters, that's roughly what shows up in Google search results and link previews:
 
-```toml
+```
 +++
 title = "Bypassing Signature Checks on Embedded Bootloaders"
 date = 2026-08-02T15:12:38+02:00
@@ -241,7 +278,7 @@ This is deliberately built on Zola's native taxonomy system (the same mechanism 
 
 Create one file: `content/collections/<id>.md`
 
-```toml
+```
 +++
 title = "HTB Sherlock"
 date = 2026-08-01        # started
@@ -263,7 +300,7 @@ The `status` field controls what the position indicator shows on entry pages: `c
 
 In any post, in **any** section, add:
 
-```toml
+```
 [taxonomies]
 collection = ["htb-sherlock"]   # must match the collection's <id> exactly
 
@@ -292,13 +329,114 @@ Both are computed at build time from `collection_part`, not from publish date, s
 
 Nothing to do, just don't add a `collection` taxonomy. Every post is standalone by default; collections are opt-in.
 
+## Contact, donations & PGP
+
+The About page can optionally show three sections, in this order": **Contact** (socials/email/etc.), **Donate** (crypto addresses) and **PGP** (fingerprint + public key link). Each one is entirely config-driven, from `zola.toml` and each renders only if configured, an empty or absent field means that section simply doesn't appear, no blank boxes.
+
+### Contact
+
+```
+[[extra.socials]]
+label = "Email"
+value = "you@example.com"
+url = "mailto:you@example.com"
+icon = "mail"
+
+[[extra.socials]]
+label = "GitHub"
+value = "@you"
+url = "https://github.com/you"
+icon = "github"
+```
+
+One entry per channel, in the order you want them displayed. `label` is the fixed text shown before the link; `value` is the human-readable link text (a handle, an address); `url` is where it points.
+
+### Donations
+
+```
+[[extra.donations]]
+coin = "BTC"
+address = "bc1q..."
+icon = "bitcoin"
+
+[[extra.donations]]
+coin = "XMR"
+address = "4..."
+icon = "monero"
+```
+
+One entry per coin you accept, in display order. Add or remove entries freely, nothing else needs updating.
+
+### PGP
+
+```
+[extra]
+pgp_fingerprint = "AAAA BBBB CCCC DDDD EEEE  FFFF 0000 1111 2222 3333"
+pgp_key_url = "/pgp-key.asc"
+```
+
+`pgp_key_url` should point at your exported public key, a file under `static/` (linked as an absolute path like above) or an external keyserver URL. Export one with:
+
+```
+gpg --armor --export you@example.com > static/pgp-key.asc
+```
+
+The section only appears if `pgp_fingerprint` is set; `pgp_key_url` is optional on top of that (omit it and you just get the fingerprint with no download link).
+
+### Icons
+
+Both Contact and Donate entries take an `icon` field, a slug rendered as an inline SVG next to the entry, styled to inherit the surrounding text color rather than showing a fixed brand color. The icons live in `iconpack/` at the theme root (not under `static/`), split into `iconpack/social/`, `iconpack/crypto/`, and `iconpack/generic/`:
+
+- **`iconpack/social/`** and **`iconpack/crypto/`** a curated ~58-icon subset of [Simple Icons](https://simpleicons.org) (CC0 1.0), covering common platforms (GitHub, Mastodon, Matrix, Discord, RSS, and more) and cryptocurrencies (Bitcoin, Monero, Ethereum, and 17 others). See `iconpack/social/` and `iconpack/crypto/` for the exact file list, each `<slug>.svg` matches the `icon` value you'd write in config.
+- **`iconpack/generic/`** five fallback icons from [Lucide](https://lucide.dev) (ISC) for concepts Simple Icons doesn't cover as a brand: `mail`, `key`, `link`, `coins`, `globe`. Use these for a generic email address, or leave `icon` unset entirely and the template falls back to `link` (Contact) or `coins` (Donate) automatically.
+
+Icons are inlined at build time via Zola's `load_data(path=..., format="plain")`, only the icons a site actually references end up in the published HTML; the rest of the bundled pack adds to the theme repo's size but never ships to visitors. **This requires `iconpack/` to exist at your site's root** (see [Installation](#installation) above), `load_data()` cannot reach it inside `themes/NOIR/` since Zola resolves these paths against the site being built, not the theme providing the template.
+
+**If you set `icon` to a slug that isn't bundled, the build fails** with a clear `doesn't exist` error naming the missing file, it does not fall back silently. This is intentional (consistent with how a missing `collection_part` fails loudly elsewhere in this theme) so a typo doesn't quietly ship a broken page. To add an icon that isn't in the curated set, grab the single SVG from upstream and drop it in the matching folder:
+
+- More Simple Icons (thousands of brands and cryptocurrencies): https://github.com/simple-icons/simple-icons/tree/develop/icons
+- More Lucide glyphs: https://github.com/lucide-icons/lucide/tree/main/icons
+
+No registration or build step beyond adding the file, see `iconpack/README.md` for details.
+
+## Webring
+
+The footer can optionally show a webring widget: `← previous site · ring name · next site →`, computed from your position in a configured member list.
+
+```
+[extra.webring]
+enabled = true
+name = "Example Webring"
+url = "https://example-webring.example/"
+
+[[extra.webring.sites]]
+name = "alice's blog"
+url = "https://alice.example"
+
+[[extra.webring.sites]]
+name = "This site"
+url = "https://example.com"
+current = true
+
+[[extra.webring.sites]]
+name = "bob's blog"
+url = "https://bob.example"
+```
+
+`sites` is the full membership list **in ring order**, including your own site, mark exactly one entry `current = true` so the template knows where you are and can compute your neighbors. `name`/`url` on `[extra.webring]` itself describe the ring (optional, `url` usually points at the ring's member directory or homepage).
+
+`enabled = false` hides the widget while leaving the rest of the config intact, useful if you've listed a reciprocal link but haven't confirmed the other site actually links back yet, or you just want to pause it temporarily without deleting the list. Omit `enabled` (or leave it `true`) to show it normally.
+
+Position is resolved at build time (`set_global` plus modulo arithmetic over the list), so reordering or growing the ring is just editing this list, nothing to recompute by hand.
+
+**Limitations, both deliberate:**
+- Only previous/next are rendered, not the classic "random member" link some rings offer. A static site with no JavaScript and no server can't pick randomly at request time, only in advance, so a "random" link here would just be a fixed, non-random choice wearing a misleading label.
+- If `sites` has fewer than 2 entries, none is marked `current`, or `enabled` is `false`, the widget doesn't render, no error, it just silently doesn't appear. If you're not in a webring, leave `[extra.webring]` out entirely, the footer stays otherwise empty (no fallback text is shown in its place).
+- **With exactly 2 sites in the ring**, previous and next resolve to the same site, the wraparound math has nowhere else to go. Cosmetically redundant (`← friend · ring · friend →`) but not a bug.
+
 ## Managing content
 
 Everything above, creating files, filling in front matter, bumping `updated` on a collection, running `zola build`/`zola serve`, is done by hand today, the same way as on any other Zola site. There is no bundled tooling in this repository.
-
-### Planned: `archivist`
-
-`archivist` is a separate CLI/TUI tool, **currently in early/embryonic development, not yet released**, intended to live in its own repository and automate the bookkeeping this theme's Collections feature involves: auto-numbering `collection_part`, bumping a collection's `updated` date, validating the content tree before a build (catching a missing `collection_part`, a `collection` id that doesn't match any collection file, duplicate part numbers, etc.), and optionally driving `zola build`/`zola serve` with output streamed into the tool.
 
 ## Templates
 
@@ -314,7 +452,7 @@ Everything above, creating files, filling in front matter, bumping `updated` on 
 | `wargames_section.html` | Wargame logs listing, shows platform, level, difficulty |
 | `collections_section.html` | Index of all series/projects/dossiers |
 | `collection_single.html` | Single collection reference page,  status, entry count, ordered entry list |
-| `about_section.html` | Renders the About page body |
+| `about_section.html` | Renders the About page body, plus optional Contact / Donate / PGP sections |
 | `taxonomy_list.html` | Index of tags or categories |
 | `taxonomy_single.html` | Pages under one tag/category |
 | `404.html` | Not found page |
@@ -324,13 +462,15 @@ Everything above, creating files, filling in front matter, bumping `updated` on 
 
 This repository is itself a working Zola site used to preview the theme. It contains a self-referencing symlink so you can develop and preview NOIR without a separate demo site, already included in this repo (`themes/NOIR`, pointing at the repository root):
 
-```bash
+```
 zola serve
 ```
 
+Because the symlink makes the theme root and the site root the same directory here, `zola.toml`, `content/` and `iconpack/` at the repository root all resolve correctly without any copying, this is *not* representative of a real consuming site, where those three live separately (see [Installation](#installation) above for an actual site needs to copy over).
+
 If you're setting it up from scratch elsewhere (or the symlink didn't survive a zip/copy, see note below), recreate it from the repository root with:
 
-```bash
+```
 mkdir -p themes && ln -s .. themes/NOIR
 ```
 

@@ -6,6 +6,9 @@
 A public notebook for documenting experiments, implementation details, failures, and lessons learned while exploring systems and security.
 </p>
 
+{% set home = get_section(path="_index.md") %}
+
+{% if "posts/_index.md" in home.subsections %}
 {% set posts_section = get_section(path="posts/_index.md") %}
 {% if posts_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:20px">&gt;&gt; LATEST TRANSMISSIONS</h2>
@@ -22,21 +25,25 @@ A public notebook for documenting experiments, implementation details, failures,
 {% endfor %}
 </ul>
 {% endif %}
+{% endif %}
 
+{% if "projects/_index.md" in home.subsections %}
 {% set projects_section = get_section(path="projects/_index.md") %}
 {% if projects_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; ACTIVE PROJECTS</h2>
 {% for project in projects_section.pages %}
 {% if loop.index <= 2 %}
 <div style="background:#16191D;border:1px solid #2A2F36;padding:24px;margin-bottom:24px">
-<h3 style="margin:0 0 12px;font-size:20px">{{ project.title }}</h3>
+	<h3 style="margin:0 0 12px;font-size:20px"><a href="{{project.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ project.title }}</a></h3>
 {% if project.extra.stack %}<p style="font-family:'CommitMono',monospace;font-size:12px;color:#5C6370;margin:0"><strong style="color:#A0A5AD">STACK:</strong> {{ project.extra.stack }}</p>{% endif %}
 {% if project.summary %}<p style="margin:12px 0 0">{{ project.summary | safe }}</p>{% endif %}
 </div>
 {% endif %}
 {% endfor %}
 {% endif %}
+{% endif %}
 
+{% if "notes/_index.md" in home.subsections %}
 {% set notes_section = get_section(path="notes/_index.md") %}
 {% if notes_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; FIELD NOTES</h2>
@@ -51,7 +58,9 @@ A public notebook for documenting experiments, implementation details, failures,
 {% endfor %}
 </div>
 {% endif %}
+{% endif %}
 
+{% if "ctf/_index.md" in home.subsections %}
 {% set ctf_section = get_section(path="ctf/_index.md") %}
 {% if ctf_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; RECENT CTF</h2>
@@ -69,7 +78,9 @@ A public notebook for documenting experiments, implementation details, failures,
 {% endfor %}
 </ul>
 {% endif %}
+{% endif %}
 
+{% if "wargames/_index.md" in home.subsections %}
 {% set wargames_section = get_section(path="wargames/_index.md") %}
 {% if wargames_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; RECENT WARGAMES</h2>
@@ -77,14 +88,16 @@ A public notebook for documenting experiments, implementation details, failures,
 {% for entry in wargames_section.pages %}
 {% if loop.index <= 4 %}
 <div style="border:1px solid #2A2F36;padding:16px">
-<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:4px">{{ entry.date | date(format="%Y-%m-%d") }}{% if entry.extra.platform %} — {{ entry.extra.platform }}{% endif %}</div>
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;margin-bottom:4px">{{ entry.date | date(format="%Y-%m-%d") }}{% if entry.extra.platform %} - {{ entry.extra.platform }}{% endif %}</div>
 <h3 style="margin:0;font-size:14px"><a href="{{ entry.permalink | safe }}" style="color:#E5C07B;text-decoration:none">{{ entry.title }}</a></h3>
 </div>
 {% endif %}
 {% endfor %}
 </div>
 {% endif %}
+{% endif %}
 
+{% if "collections/_index.md" in home.subsections %}
 {% set collections_section = get_section(path="collections/_index.md") %}
 {% if collections_section.pages | length > 0 %}
 <h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; COLLECTIONS</h2>
@@ -99,5 +112,26 @@ A public notebook for documenting experiments, implementation details, failures,
 {% endfor %}
 </ul>
 {% endif %}
+{% endif %}
+
+{% set known_subsections = ["posts/_index.md", "projects/_index.md", "notes/_index.md", "collections/_index.md", "ctf/_index.md", "wargames/_index.md", "about/_index.md"] %}
+{% for sub_path in home.subsections %}
+{% if sub_path not in known_subsections %}
+{% set custom_section = get_section(path=sub_path) %}
+{% if custom_section.pages | length > 0 %}
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin:48px 0 20px">&gt;&gt; {{ custom_section.title | upper }}</h2>
+<ul style="list-style:none;padding:0;margin:0">
+{% for entry in custom_section.pages %}
+{% if loop.index <= 5 %}
+<li style="border-left:2px solid #2A2F36;padding-left:16px;margin-bottom:16px">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370">{{ entry.date | date(format="%Y-%m-%d") }}</div>
+<h3 style="margin:2px 0 0;font-size:15px"><a href="{{ entry.permalink | safe }}" style="color:#E6E6E6;text-decoration:none">{{ entry.title }}</a></h3>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+{% endfor %}
 
 {% endblock content %}

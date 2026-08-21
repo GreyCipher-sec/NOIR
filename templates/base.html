@@ -8,6 +8,7 @@
 <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
 {% if current_url %}<link rel="canonical" href="{{ current_url | safe }}">{% else %}<link rel="canonical" href="{{ config.base_url | safe }}">{% endif %}
 <link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="alternate" type="application/rss+xml" title="{{ config.title }}" href="{{ get_url(path='rss.xml', trailing_slash=false) | safe }}">
 <link rel="stylesheet" href="/css/fonts.css">
 
 <!-- Open Graph -->
@@ -57,6 +58,8 @@ td{color:#A0A5AD}
 tr:hover td{background:#16191D}
 img{max-width:100%;height:auto;display:block}
 hr{border:none;border-top:1px solid #2A2F36;margin:48px 0}
+.icon-inline{display:inline-flex;flex-shrink:0;width:16px;height:16px}
+.icon-inline svg{width:100%;height:100%;fill:currentColor;stroke:currentColor}
 </style>
 </head>
 <body>
@@ -67,20 +70,51 @@ hr{border:none;border-top:1px solid #2A2F36;margin:48px 0}
 <p style="color:#5C6370;font-size:14px;margin:8px 0 0">Independent research archive</p>
 <nav style="font-family:'CommitMono',monospace;font-size:14px;margin:20px 0;display:flex;gap:20px;flex-wrap:wrap">
 <a href="/">[index]</a>
-<a href="/posts/">posts</a>
-<a href="/projects/">projects</a>
-<a href="/notes/">notes</a>
-<a href="/collections/">collections</a>
-<a href="/ctf/">ctf</a>
-<a href="/wargames/">wargames</a>
+{% set home = get_section(path="_index.md") %}
+{% if "posts/_index.md" in home.subsections %}{% set posts_section = get_section(path="posts/_index.md") %}{% if posts_section.pages | length > 0 %}<a href="/posts/">posts</a>{% endif %}{% endif %}
+{% if "projects/_index.md" in home.subsections %}{% set projects_section = get_section(path="projects/_index.md") %}{% if projects_section.pages | length > 0 %}<a href="/projects/">projects</a>{% endif %}{% endif %}
+{% if "notes/_index.md" in home.subsections %}{% set notes_section = get_section(path="notes/_index.md") %}{% if notes_section.pages | length > 0 %}<a href="/notes/">notes</a>{% endif %}{% endif %}
+{% if "collections/_index.md" in home.subsections %}{% set collections_section = get_section(path="collections/_index.md") %}{% if collections_section.pages | length > 0 %}<a href="/collections/">collections</a>{% endif %}{% endif %}
+{% if "ctf/_index.md" in home.subsections %}{% set ctf_section = get_section(path="ctf/_index.md") %}{% if ctf_section.pages | length > 0 %}<a href="/ctf/">ctf</a>{% endif %}{% endif %}
+{% if "wargames/_index.md" in home.subsections %}{% set wargames_section = get_section(path="wargames/_index.md") %}{% if wargames_section.pages | length > 0 %}<a href="/wargames/">wargames</a>{% endif %}{% endif %}
+{% set known_subsections = ["posts/_index.md", "projects/_index.md", "notes/_index.md", "collections/_index.md", "ctf/_index.md", "wargames/_index.md", "about/_index.md"] %}
+{% for sub_path in home.subsections %}
+{% if sub_path not in known_subsections %}
+{% set custom_section = get_section(path=sub_path) %}
+{% if custom_section.pages | length > 0 %}<a href="{{ custom_section.path | safe }}">{{ custom_section.title | lower }}</a>{% endif %}
+{% endif %}
+{% endfor %}
 <a href="/about/">about</a>
+{% set rss_icon = load_data(path="iconpack/social/rss.svg", format="plain") %}
+<a href="/rss.xml" style="display:inline-flex;align-items:center;gap:5px"><span class="icon-inline">{{ rss_icon | safe }}</span>rss</a>
 </nav>
 </header>
 <main>
 {% block content %}{% endblock content %}
 </main>
 <footer style="border-top:1px solid #2A2F36;margin-top:64px;padding-top:24px;font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">
-greycipher.dev | <a href="/rss.xml">RSS</a> | dark mode
+
+{% if config.extra.webring and config.extra.webring.enabled | default(value=true) and config.extra.webring.sites and config.extra.webring.sites | length > 1 %}
+{% set_global webring_current_index = -1 %}
+{% for site in config.extra.webring.sites %}
+{% if site.current %}{% set_global webring_current_index = loop.index0 %}{% endif %}
+{% endfor %}
+{% if webring_current_index > -1 %}
+{% set webring_len = config.extra.webring.sites | length %}
+{% set webring_prev_i = (webring_current_index - 1 + webring_len) % webring_len %}
+{% set webring_next_i = (webring_current_index + 1) % webring_len %}
+{% set webring_prev = config.extra.webring.sites | nth(n=webring_prev_i) %}
+{% set webring_next = config.extra.webring.sites | nth(n=webring_next_i) %}
+<div>
+<a href="{{ webring_prev.url | safe }}">&larr; {{ webring_prev.name }}</a>
+&nbsp;&middot;&nbsp;
+{% if config.extra.webring.url %}<a href="{{ config.extra.webring.url | safe }}">{{ config.extra.webring.name | default(value="webring") }}</a>{% else %}{{ config.extra.webring.name | default(value="webring") }}{% endif %}
+&nbsp;&middot;&nbsp;
+<a href="{{ webring_next.url | safe }}">{{ webring_next.name }} &rarr;</a>
+</div>
+{% endif %}
+{% endif %}
+
 </footer>
 </div>
 </body>

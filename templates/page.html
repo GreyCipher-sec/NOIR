@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page.title }} — {{ config.title }}{% endblock title %}
+{% block title %}{{ page.title }} - {{ config.title }}{% endblock title %}
 {% block description %}{% if page.description %}{{ page.description }}{% elif page.summary %}{{ page.summary | striptags | truncate(length=160) }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
 
 {% block og_type %}article{% endblock og_type %}
@@ -10,7 +10,14 @@
 {% block twitter_description %}{% if page.description %}{{ page.description }}{% elif page.summary %}{{ page.summary | striptags | truncate(length=160) }}{% else %}{{ config.description }}{% endif %}{% endblock twitter_description %}
 
 {% block extra_head %}
-{% if page.taxonomies.collection %}{% set jsonld_collection_page = get_page(path="collections/" ~ page.taxonomies.collection[0] ~ ".md") %}{% endif %}
+{% set_global has_collection = false %}
+{% if page.taxonomies.collection %}
+{% set home = get_section(path="_index.md") %}
+{% if "collections/_index.md" in home.subsections %}
+{% set collections_section = get_section(path="collections/_index.md") %}
+{% for c in collections_section.pages %}{% if c.slug == page.taxonomies.collection[0] %}{% set_global has_collection = true %}{% set_global jsonld_collection_page = c %}{% endif %}{% endfor %}
+{% endif %}
+{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -21,7 +28,7 @@
   "author": { "@type": "Person", "name": {{ config.extra.author | default(value=config.title) | json_encode | safe }} },
   "mainEntityOfPage": { "@type": "WebPage", "@id": {{ current_url | json_encode | safe }} }
   {% if page.description %},"description": {{ page.description | json_encode | safe }}{% endif %}
-  {% if page.taxonomies.collection %},"isPartOf": { "@type": "CreativeWorkSeries", "name": {{ jsonld_collection_page.title | json_encode | safe }}, "url": {{ jsonld_collection_page.permalink | json_encode | safe }} }{% endif %}
+  {% if has_collection %},"isPartOf": { "@type": "CreativeWorkSeries", "name": {{ jsonld_collection_page.title | json_encode | safe }}, "url": {{ jsonld_collection_page.permalink | json_encode | safe }} }{% endif %}
 }
 </script>
 {% endblock extra_head %}
@@ -30,9 +37,16 @@
 
 <article style="margin-bottom:64px">
 <header style="margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid #2A2F36">
+{% set_global in_collection = false %}
 {% if page.taxonomies.collection %}
 {% set collection_id = page.taxonomies.collection[0] %}
-{% set collection_page = get_page(path="collections/" ~ collection_id ~ ".md") %}
+{% set home = get_section(path="_index.md") %}
+{% if "collections/_index.md" in home.subsections %}
+{% set collections_section = get_section(path="collections/_index.md") %}
+{% for c in collections_section.pages %}{% if c.slug == collection_id %}{% set_global in_collection = true %}{% set_global collection_page = c %}{% endif %}{% endfor %}
+{% endif %}
+{% endif %}
+{% if in_collection %}
 {% set collection_term_data = get_taxonomy_term(kind="collection", term=collection_id) %}
 {% set members = collection_term_data.pages | sort(attribute="extra.collection_part") %}
 {% set_global my_index = -1 %}
@@ -57,7 +71,7 @@
 {{ page.content | safe }}
 </div>
 
-{% if page.taxonomies.collection %}
+{% if in_collection %}
 <nav aria-label="Collection navigation" style="margin-top:48px;padding-top:16px;border-top:1px solid #2A2F36;font-family:'CommitMono',monospace;font-size:14px">
 <div style="display:flex;flex-direction:column;gap:10px">
 {% if my_index > 0 %}
@@ -77,4 +91,3 @@
 </article>
 
 {% endblock content %}
-

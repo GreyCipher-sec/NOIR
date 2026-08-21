@@ -1,0 +1,95 @@
+# Copy this file to your new site's root as `config.toml` and edit the
+# values below. Every [extra] block is optional, delete any section you
+# don't want (or just leave the field blank/absent, most sections hide
+# themselves automatically when their data is missing).
+#
+# See the README for the full explanation of each section: Content
+# structure, Collections, Contact/Donate/PGP, and Webring.
+
+base_url = "https://example.com"
+title = "Your Site"
+description = "Your tagline."
+default_language = "en"
+theme = "NOIR"
+
+generate_feeds = true
+feed_filenames = ["rss.xml"]
+
+build_search_index = false
+compile_sass = false
+
+[markdown]
+render_emoji = false
+
+[[taxonomies]]
+name = "tags"
+feed = true
+paginate_by = 10
+
+[[taxonomies]]
+name = "categories"
+feed = true
+paginate_by = 10
+
+[extra]
+author = "Your Name"
+social_image = "images/social-preview.png"  # optional, used for Open Graph / Twitter previews, see README > SEO
+
+# --- PGP -----------------------------------------------------------
+# Shows a PGP section on the About page. Delete both lines, or just
+# pgp_fingerprint, to hide it entirely.
+#   gpg --armor --export you@example.com > static/pgp-key.asc
+# pgp_fingerprint = "AAAA BBBB CCCC DDDD EEEE  FFFF 0000 1111 2222 3333"
+# pgp_key_url = "/pgp-key.asc"
+
+# --- Crypto donations ------------------------------------------------
+# One entry per coin, in the order you want them shown. Delete this
+# whole block to hide the DONATE section. `icon` is optional, see
+# iconpack/crypto/ for bundled slugs, or iconpack/README.md to add one.
+# [[extra.donations]]
+# coin = "BTC"
+# address = "bc1q..."
+# icon = "bitcoin"
+
+# [[extra.donations]]
+# coin = "XMR"
+# address = "4..."
+# icon = "monero"
+
+# --- Socials / contact ------------------------------------------------
+# One entry per channel. Delete this whole block to hide the CONTACT
+# section. `icon` is optional, see iconpack/social/ and
+# iconpack/generic/ for bundled slugs.
+# [[extra.socials]]
+# label = "Email"
+# value = "you@example.com"
+# url = "mailto:you@example.com"
+# icon = "mail"
+
+# [[extra.socials]]
+# label = "GitHub"
+# value = "@you"
+# url = "https://github.com/you"
+# icon = "github"
+
+# --- Webring ------------------------------------------------------
+# Shown in the footer as "← prev · ring name · next →". Needs at least
+# 2 sites, with exactly one marked `current = true`. Delete this whole
+# block (or set enabled = false) to hide it.
+# [extra.webring]
+# enabled = true
+# name = "Example Webring"
+# url = "https://example-webring.example/"
+
+# [[extra.webring.sites]]
+# name = "alice's blog"
+# url = "https://alice.example"
+
+# [[extra.webring.sites]]
+# name = "This site"
+# url = "https://example.com"
+# current = true
+
+# [[extra.webring.sites]]
+# name = "bob's blog"
+# url = "https://bob.example"

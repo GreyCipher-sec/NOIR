@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ section.title }} — {{ config.title }}{% endblock title %}
+{% block title %}{{ section.title }} - {{ config.title }}{% endblock title %}
 {% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock description %}
 {% block og_title %}{{ section.title }}{% endblock og_title %}
 {% block og_description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock og_description %}
@@ -12,5 +12,59 @@
 <div style="max-width:600px">
 {{ section.content | safe }}
 </div>
+
+{% set generic_icons = ["mail", "key", "link", "coins", "globe"] %}
+
+{% if config.extra.socials %}
+<div style="max-width:600px;margin-top:48px;padding-top:24px;border-top:1px solid #2A2F36">
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:16px">&gt;&gt; CONTACT</h2>
+<div style="font-family:'CommitMono',monospace;font-size:14px;display:flex;flex-direction:column;gap:10px">
+{% for s in config.extra.socials %}
+{% if s.icon and s.icon in generic_icons %}
+{% set social_icon = load_data(path="iconpack/generic/" ~ s.icon ~ ".svg", format="plain") %}
+{% elif s.icon %}
+{% set social_icon = load_data(path="iconpack/social/" ~ s.icon ~ ".svg", format="plain") %}
+{% else %}
+{% set social_icon = load_data(path="iconpack/generic/link.svg", format="plain") %}
+{% endif %}
+<div style="display:flex;align-items:center;gap:10px"><span class="icon-inline" style="color:#5C6370">{{ social_icon | safe }}</span><span style="color:#5C6370">{{ s.label }}:</span> <a href="{{ s.url | safe }}">{{ s.value }}</a></div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% if config.extra.donations %}
+<div style="max-width:600px;margin-top:48px;padding-top:24px;border-top:1px solid #2A2F36">
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:16px">&gt;&gt; DONATE</h2>
+<div style="display:flex;flex-direction:column;gap:12px">
+{% for d in config.extra.donations %}
+{% if d.icon and d.icon in generic_icons %}
+{% set coin_icon = load_data(path="iconpack/generic/" ~ d.icon ~ ".svg", format="plain") %}
+{% elif d.icon %}
+{% set coin_icon = load_data(path="iconpack/crypto/" ~ d.icon ~ ".svg", format="plain") %}
+{% else %}
+{% set coin_icon = load_data(path="iconpack/generic/coins.svg", format="plain") %}
+{% endif %}
+<div style="border:1px solid #2A2F36;padding:12px 16px;background:#131518">
+<div style="font-family:'CommitMono',monospace;font-size:11px;color:#5C6370;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;display:flex;align-items:center;gap:8px"><span class="icon-inline">{{ coin_icon | safe }}</span>{{ d.coin }}</div>
+<div style="font-family:'CommitMono',monospace;font-size:13px;color:#E6E6E6;word-break:break-all">{{ d.address }}</div>
+</div>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+{% if config.extra.pgp_fingerprint %}
+{% set pgp_icon = load_data(path="iconpack/generic/key.svg", format="plain") %}
+<div style="max-width:600px;margin-top:48px;padding-top:24px;border-top:1px solid #2A2F36">
+<h2 style="font-family:'CommitMono',monospace;font-size:12px;color:#98C379;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span class="icon-inline" style="color:#98C379">{{ pgp_icon | safe }}</span>&gt;&gt; PGP</h2>
+<div style="border:1px solid #2A2F36;padding:16px;background:#131518">
+<div style="font-family:'CommitMono',monospace;font-size:13px;color:#E6E6E6;letter-spacing:0.04em;word-break:break-all;line-height:1.8">{{ config.extra.pgp_fingerprint }}</div>
+</div>
+{% if config.extra.pgp_key_url %}
+<p style="margin-top:12px;font-family:'CommitMono',monospace;font-size:13px"><a href="{{ config.extra.pgp_key_url | safe }}">&rarr; download public key</a></p>
+{% endif %}
+</div>
+{% endif %}
 
 {% endblock content %}

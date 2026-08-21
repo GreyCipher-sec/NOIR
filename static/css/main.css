@@ -1,12 +1,12 @@
 /* ============================================================
-   GreyCipher.dev — NOIR Design System
+   GreyCipher.dev - NOIR Design System
    ============================================================
    A dependency-free, dark-mode-only CSS design system for a
    technical research archive. Terminal-inspired, minimal,
    accessible, production-ready.
    ============================================================ */
 
-/* ── 1. CSS Variables (Design Tokens) ── */
+/* -- 1. CSS Variables (Design Tokens) -- */
 :root {
   /* Backgrounds */
   --bg-base:     #0F1113;
@@ -26,7 +26,7 @@
   --border-hover: #3E4451;
   --border-subtle: #1E2227;
 
-  /* Accents — used sparingly */
+  /* Accents - used sparingly */
   --accent-blue:   #61AFEF;
   --accent-green:  #98C379;
   --accent-yellow: #E5C07B;
@@ -57,7 +57,7 @@
   --transition-base: 0.15s ease;
 }
 
-/* ── 2. Reset & Base ── */
+/* -- 2. Reset & Base -- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -96,7 +96,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ── 3. Typography ── */
+/* -- 3. Typography -- */
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -159,7 +159,7 @@ em, i {
   color: var(--fg-secondary);
 }
 
-/* ── 4. Monospace Elements ── */
+/* -- 4. Monospace Elements -- */
 code, kbd, samp {
   font-family: var(--font-mono);
   font-size: 0.875em;
@@ -193,7 +193,7 @@ pre code {
   word-break: normal;
 }
 
-/* ── 5. Lists ── */
+/* -- 5. Lists -- */
 ul, ol {
   margin-bottom: var(--space-md);
   padding-left: var(--space-lg);
@@ -213,7 +213,7 @@ ul ul, ol ol, ul ol, ol ul {
   margin-bottom: var(--space-xs);
 }
 
-/* ── 6. Blockquotes ── */
+/* -- 6. Blockquotes -- */
 blockquote {
   border-left: 2px solid var(--border-hover);
   padding-left: var(--space-md);
@@ -231,14 +231,14 @@ blockquote p:last-child {
   margin-bottom: 0;
 }
 
-/* ── 7. Horizontal Rule ── */
+/* -- 7. Horizontal Rule -- */
 hr {
   border: none;
   border-top: 1px solid var(--border);
   margin: var(--space-2xl) 0;
 }
 
-/* ── 8. Tables ── */
+/* -- 8. Tables -- */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -277,7 +277,7 @@ tr:hover td {
   background: var(--bg-surface);
 }
 
-/* ── 9. Images & Figures ── */
+/* -- 9. Images & Figures -- */
 img {
   max-width: 100%;
   height: auto;
@@ -298,7 +298,7 @@ figcaption {
   font-family: var(--font-mono);
 }
 
-/* ── 10. Layout Container ── */
+/* -- 10. Layout Container -- */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -311,7 +311,7 @@ figcaption {
   }
 }
 
-/* ── 11. Skip Link ── */
+/* -- 11. Skip Link -- */
 .skip-link {
   position: absolute;
   top: -40px;
@@ -330,7 +330,7 @@ figcaption {
   top: 0;
 }
 
-/* ── 12. Header ── */
+/* -- 12. Header -- */
 .site-header {
   border-bottom: 1px solid var(--border);
   padding: var(--space-xl) 0 var(--space-md);
@@ -370,7 +370,7 @@ figcaption {
   margin: var(--space-sm) 0 0;
 }
 
-/* ── 13. Navigation ── */
+/* -- 13. Navigation -- */
 .site-nav {
   margin: var(--space-lg) 0 var(--space-sm);
   font-family: var(--font-mono);
@@ -402,7 +402,7 @@ figcaption {
   }
 }
 
-/* ── 14. Section Labels (Terminal-style) ── */
+/* -- 14. Section Labels (Terminal-style) -- */
 .section-label {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -413,7 +413,7 @@ figcaption {
   font-weight: 500;
 }
 
-/* ── 15. Entry List (Posts, Notes) ── */
+/* -- 15. Entry List (Posts, Notes) -- */
 .entry-list {
   list-style: none;
   padding: 0;
@@ -478,7 +478,7 @@ figcaption {
   max-width: 60ch;
 }
 
-/* ── 16. Tags ── */
+/* -- 16. Tags -- */
 .tag {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -496,7 +496,7 @@ a.tag:hover {
   text-decoration: none;
 }
 
-/* ── 17. Article / Single Page ── */
+/* -- 17. Article / Single Page -- */
 .article {
   margin-bottom: var(--space-3xl);
 }
@@ -543,7 +543,7 @@ a.tag:hover {
   margin-top: 0;
 }
 
-/* ── 18. Table of Contents ── */
+/* -- 18. Table of Contents -- */
 .toc {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -588,7 +588,7 @@ a.tag:hover {
   margin-top: var(--space-xs);
 }
 
-/* ── 19. Project Dossier ── */
+/* -- 19. Project Dossier -- */
 .dossier {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -652,7 +652,7 @@ a.tag:hover {
   margin-bottom: 0;
 }
 
-/* ── 20. Notes Grid ── */
+/* -- 20. Notes Grid -- */
 
 .note-card .article_content,
 .note-card .article,
@@ -719,7 +719,7 @@ a.tag:hover {
   color: var(--fg-muted);
 }
 
-/* ── 21. About Page ── */
+/* -- 21. About Page -- */
 .about-section {
   max-width: 600px;
 }
@@ -729,7 +729,7 @@ a.tag:hover {
   line-height: 1.8;
 }
 
-/* ── 22. Footer ── */
+/* -- 22. Footer -- */
 .site-footer {
   border-top: 1px solid var(--border);
   padding: var(--space-lg) 0 var(--space-2xl);
@@ -749,7 +749,7 @@ a.tag:hover {
   text-decoration: none;
 }
 
-/* ── 23. Pagination ── */
+/* -- 23. Pagination -- */
 .pagination {
   display: flex;
   justify-content: space-between;
@@ -771,7 +771,7 @@ a.tag:hover {
   text-decoration: none;
 }
 
-/* ── 24. 404 Page ── */
+/* -- 24. 404 Page -- */
 .error-page {
   text-align: center;
   padding: var(--space-3xl) 0;
@@ -793,7 +793,7 @@ a.tag:hover {
   font-size: 1rem;
 }
 
-/* ── 25. Intro Section ── */
+/* -- 25. Intro Section -- */
 .intro {
   margin-bottom: var(--space-2xl);
   max-width: 55ch;
@@ -805,19 +805,19 @@ a.tag:hover {
   color: var(--fg-secondary);
 }
 
-/* ── 26. Page Header ── */
+/* -- 26. Page Header -- */
 .page-header {
   margin-bottom: var(--space-xl);
 }
 
-/* ── 27. Related Posts ── */
+/* -- 27. Related Posts -- */
 .related {
   margin-top: var(--space-2xl);
   padding-top: var(--space-lg);
   border-top: 1px solid var(--border);
 }
 
-/* ── 28. Syntax Highlighting (Chroma classes) ── */
+/* -- 28. Syntax Highlighting (Chroma classes) -- */
 .chroma { background: var(--bg-code); }
 .chroma .lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }
 .chroma .lntable { border-spacing: 0; padding: 0; margin: 0; border: 0; width: auto; overflow: auto; display: block; }
@@ -899,7 +899,7 @@ a.tag:hover {
 .chroma .gu  { color: var(--fg-muted); }     /* GenericSubheading */
 .chroma .gt  { color: var(--accent-red); }    /* GenericTraceback */
 
-/* ── 29. Responsive ── */
+/* -- 29. Responsive -- */
 @media (max-width: 640px) {
   :root {
     --max-width: 100%;
@@ -965,7 +965,7 @@ a.tag:hover {
   }
 }
 
-/* ── 30. Print styles ── */
+/* -- 30. Print styles -- */
 @media print {
   body {
     background: #fff;

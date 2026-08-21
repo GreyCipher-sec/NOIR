@@ -1,15 +1,15 @@
 /* ============================================================
-   GreyCipher.dev — Font Face Declarations
+   GreyCipher.dev - Font Face Declarations
    ============================================================
    Self-hosted fonts. Files live in /static/fonts/.
 
    Archivo (sans):    https://fontsource.org/fonts/archivo
-                       Omnibus-Type — OFL-1.1
+                       Omnibus-Type - OFL-1.1
    CommitMono (mono):  https://commitmono.com/
-                       Formulate — OFL-1.1
+                       Formulate - OFL-1.1
    ============================================================ */
 
-/* ── Archivo — Regular 400 ── */
+/* -- Archivo - Regular 400 -- */
 @font-face {
   font-family: 'Archivo';
   font-style: normal;
@@ -18,7 +18,7 @@
   src: url('/fonts/archivo-latin-400-normal.woff2') format('woff2');
 }
 
-/* ── Archivo — Italic 400 ── */
+/* -- Archivo - Italic 400 -- */
 @font-face {
   font-family: 'Archivo';
   font-style: italic;
@@ -27,7 +27,7 @@
   src: url('/fonts/archivo-latin-400-italic.woff2') format('woff2');
 }
 
-/* ── Archivo — Medium 500 ── */
+/* -- Archivo - Medium 500 -- */
 @font-face {
   font-family: 'Archivo';
   font-style: normal;
@@ -36,7 +36,7 @@
   src: url('/fonts/archivo-latin-500-normal.woff2') format('woff2');
 }
 
-/* ── Archivo — SemiBold 600 ── */
+/* -- Archivo - SemiBold 600 -- */
 @font-face {
   font-family: 'Archivo';
   font-style: normal;
@@ -45,7 +45,7 @@
   src: url('/fonts/archivo-latin-600-normal.woff2') format('woff2');
 }
 
-/* ── Archivo — Bold 700 ── */
+/* -- Archivo - Bold 700 -- */
 @font-face {
   font-family: 'Archivo';
   font-style: normal;
@@ -54,7 +54,7 @@
   src: url('/fonts/archivo-latin-700-normal.woff2') format('woff2');
 }
 
-/* ── CommitMono — Regular 400 ── */
+/* -- CommitMono - Regular 400 -- */
 @font-face {
   font-family: 'CommitMono';
   font-style: normal;
@@ -63,7 +63,7 @@
   src: url('/fonts/CommitMono-400-Regular.otf') format('opentype');
 }
 
-/* ── CommitMono — Italic 400 ── */
+/* -- CommitMono - Italic 400 -- */
 @font-face {
   font-family: 'CommitMono';
   font-style: italic;
@@ -72,7 +72,7 @@
   src: url('/fonts/CommitMono-400-Italic.otf') format('opentype');
 }
 
-/* ── CommitMono — Bold 700 ── */
+/* -- CommitMono - Bold 700 -- */
 @font-face {
   font-family: 'CommitMono';
   font-style: normal;
@@ -81,7 +81,7 @@
   src: url('/fonts/CommitMono-700-Regular.otf') format('opentype');
 }
 
-/* ── CommitMono — Bold Italic 700 ── */
+/* -- CommitMono - Bold Italic 700 -- */
 @font-face {
   font-family: 'CommitMono';
   font-style: italic;
