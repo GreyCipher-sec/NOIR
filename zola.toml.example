@@ -34,6 +34,9 @@ paginate_by = 10
 [extra]
 author = "Your Name"
 social_image = "images/social-preview.png"  # optional, used for Open Graph / Twitter previews, see README > SEO
+license_name = "MIT"
+license_url = "https://opensource.org/licenses/MIT"
+show_credit = true
 
 # --- PGP -----------------------------------------------------------
 # Shows a PGP section on the About page. Delete both lines, or just

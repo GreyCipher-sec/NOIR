@@ -94,6 +94,8 @@ hr{border:none;border-top:1px solid #2A2F36;margin:48px 0}
 </main>
 <footer style="border-top:1px solid #2A2F36;margin-top:64px;padding-top:24px;font-family:'CommitMono',monospace;font-size:12px;color:#5C6370">
 
+&copy; {{ now() | date(format="%Y") }} {{ config.extra.author | default(value=config.title) }}{% if config.extra.license_name %} &middot; {% if config.extra.license_url %}<a href="{{ config.extra.license_url | safe }}">{{ config.extra.license_name }}</a>{% else %}{{ config.extra.license_name }}{% endif %}{% endif %}{% if config.extra.show_credit | default(value=true) %} &middot; Built with <a href="https://www.getzola.org">Zola</a> &amp; <a href="https://github.com/GreyCipher-sec/NOIR">NOIR</a>{% endif %}
+
 {% if config.extra.webring and config.extra.webring.enabled | default(value=true) and config.extra.webring.sites and config.extra.webring.sites | length > 1 %}
 {% set_global webring_current_index = -1 %}
 {% for site in config.extra.webring.sites %}
@@ -105,7 +107,7 @@ hr{border:none;border-top:1px solid #2A2F36;margin:48px 0}
 {% set webring_next_i = (webring_current_index + 1) % webring_len %}
 {% set webring_prev = config.extra.webring.sites | nth(n=webring_prev_i) %}
 {% set webring_next = config.extra.webring.sites | nth(n=webring_next_i) %}
-<div>
+<div style="margin-top:12px>
 <a href="{{ webring_prev.url | safe }}">&larr; {{ webring_prev.name }}</a>
 &nbsp;&middot;&nbsp;
 {% if config.extra.webring.url %}<a href="{{ config.extra.webring.url | safe }}">{{ config.extra.webring.name | default(value="webring") }}</a>{% else %}{{ config.extra.webring.name | default(value="webring") }}{% endif %}
